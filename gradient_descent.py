@@ -1,13 +1,31 @@
+import random
+
 class BatchGradientDescent:
-    def __init__(self, num_predictors : int, learning_rate : int, num_dataset_elements : int):
-        self.num_predictors = num_predictors
-        self.predictors : [list[int]] = [0 for _ in range(self.num_predictors)]
-        self.learning_rate = learning_rate
-        self.num_dataseta_elements = num_dataset_elements
-    def hypothesis(self, X : list[int]) -> int:
-        r_val : int = None  
-        
-    def step(self) -> None:
-        for predictor in self.predictors:
-            p = predictor
-            predictor = p - (self.learning_rate)
+    def __init__(self, xTrain, yTrain, numPredictors):
+        self.thetaVector = [random.uniform(0, 1) for _ in range(numPredictors)]
+        self.xTrain = xTrain
+        self.yTrain = yTrain
+        self.b = random.uniform(0, 1)
+        self.learningRate = 0.03
+        self.numPredictors = numPredictors
+
+    def optimizeTheta(self):
+        for i in range(100):
+            for j in range(self.numPredictors):
+                sum = 0
+                for (predictors, output) in list(zip(self.xTrain, self.yTrain)):
+                    sum += (self.h([x for x in predictors]) - output) * predictors[j]
+                self.thetaVector[j] -= self.learningRate * sum
+            sum = 0
+            for (predictors, output) in list(zip(self.xTrain, self.yTrain)):
+                sum += (self.h([x for x in predictors]) - output)
+            self.b -= self.learningRate * sum
+
+            print(self.thetaVector)
+   
+    def h(self, X):
+        result = 0
+        for i, x in enumerate(X):
+            result += self.thetaVector[i] * x
+        return result + self.b
+    

@@ -24,3 +24,4 @@ b = la.yIntercept(m)
 plt.plot(xData, [(x * m + b) for x in xData], color = 'red')
 
 plt.show()
+
