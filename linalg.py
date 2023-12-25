@@ -2,23 +2,27 @@ import statistics as stat
 
 class LinAlg:
 
-    def __init__(self) -> None:
-        print('Linear Algebra class initialized')
+    def __init__(self, X, y) -> None:
+        self.X = X
+        self.y = y
 
-    def mean(self, vector):
-        return stat.fmean(vector)
+    def meanX(self):
+        return stat.fmean(self.X)
     
-    def slope(self, X, y):
-        meanX = self.mean(X)
-        meanY = self.mean(y)
+    def meanY(self):
+        return stat.fmean(self.y)
+    
+    def slope(self) -> float:
+        meanX = self.meanX()
+        meanY = self.meanY()
         numerator = 0
         denominator = 0
 
-        for currX, currY in X, y:
+        for (currX, currY) in zip(self.X, self.y):
             numerator += (currX - meanX) * (currY - meanY)
             denominator += (currX - meanX) ** 2
         
         return numerator/denominator
 
-    def yIntercept(self, X, y, slope):
-        return self.mean(y) - slope * self.mean(X) 
+    def yIntercept(self, slope) -> float:
+        return self.meanY() - slope * self.meanX()

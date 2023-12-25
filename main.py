@@ -1,28 +1,26 @@
-import csv
+import pandas as pd
 import matplotlib.pyplot as plt
 from linalg import LinAlg
 
-file = open('data/car data.csv')
+data = pd.read_csv('data/tvmarketing.csv')
 
-data = csv.reader(file)
+X = data['TV']
+y = data['Sales']
 
-la = LinAlg()
+print(X)
 
-columns = []
-headers = []
+xData = [float(i) for i in X]
+yData = [float(i) for i in y]
 
-for i, row in enumerate(data):
-    for index, element in enumerate(row):
-        if i == 0: 
-            columns.append([])
-            headers.append(element)
-        else: columns[index].append(element)
+la = LinAlg(xData, yData)
 
-dataframe = list(zip(headers, columns))
+plt.scatter(xData, yData)
 
-X = dataframe[4]
-y = dataframe[3]
 
-plt.scatter(X[1], y[1])
+m = la.slope()
+b = la.yIntercept(m)
+
+
+plt.plot(xData, [(x * m + b) for x in xData], color = 'red')
 
 plt.show()
