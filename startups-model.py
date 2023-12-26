@@ -39,7 +39,7 @@ ax.set_zlabel('Profit')
 
 bgd = BatchGradientDescent(X_train.tolist(), y_train.tolist(), 3, 0.5)
 
-bgd.optimizeTheta(11)
+bgd.optimizeThetaSimul(11)
 
 y_preds = [bgd.h(x) for x in X_test]
 
