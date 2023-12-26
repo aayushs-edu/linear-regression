@@ -9,15 +9,15 @@ import numpy as np
 
 from gradient_descent import BatchGradientDescent
 
-df = pd.read_csv('data/50_Startups.csv')
+df = pd.read_csv('data/co2.csv')
 
 # For plotting
-xPlot = df['R&D Spend']
-zPlot = df['Marketing Spend']
-yPlot = df['Profit']
+xPlot = df['Volume']
+zPlot = df['Weight']
+yPlot = df['CO2']
 
 
-X = df.iloc[:, :-2].values
+X = df.iloc[:, 2:-1].values
 y = df.iloc[:, 4].values
 
 fig = plt.figure()
@@ -32,12 +32,12 @@ X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size = 0.2
 
 ax.scatter3D(xPlot, zPlot, yPlot)
 ax.set_title('Gradient Descent')
-ax.set_xlabel(f'{df.columns[0]}')
-ax.set_ylabel(f'{df.columns[2]}')
-ax.set_zlabel('Profit')
+ax.set_xlabel('Volume')
+ax.set_ylabel('Weight')
+ax.set_zlabel('CO2 Emissions')
 
 
-bgd = BatchGradientDescent(X_train.tolist(), y_train.tolist(), 3)
+bgd = BatchGradientDescent(X_train.tolist(), y_train.tolist(), 2, 0.5)
 
 bgd.optimizeTheta(1000)
 
@@ -45,7 +45,7 @@ y_preds = [bgd.h(x) for x in X_test]
 
 comparison = np.column_stack((y_test, y_preds))
 
-# print(comparison)
+print(comparison)
 
 comparison = scaler.fit_transform(comparison)
 
@@ -53,8 +53,8 @@ y_test, y_preds = list(zip(*comparison))
 
 # print(mean_squared_error(y_test, y_preds)) 
 
-x = np.linspace(0, max(xPlot), len(xPlot))
-z = np.linspace(0, max(zPlot), len(zPlot))
+x = np.linspace(min(xPlot), max(xPlot), len(xPlot))
+z = np.linspace(min(zPlot), max(zPlot), len(zPlot))
 
 # plotInput = X_train.tolist() + X_test.tolist()
 
