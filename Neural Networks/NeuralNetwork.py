@@ -55,6 +55,9 @@ class Layer:
     def printLayer(self):
         for i in range(self.numNodes):
             print(f"Node {i+1}:", self.nodes[i])
+
+    def getNodes(self):
+        return self.nodes
     
 class NeuralNetwork:
 
@@ -72,12 +75,13 @@ class NeuralNetwork:
 
         input = inputLayer
         for layer in self.layers:
-            output = [node.sigmoidActualize(input) for node in layer]
+            output = [node.sigmoidActualize(input) for node in layer.getNodes()]
             outputs.append(output)
 
             input = output
 
-        return output[0] >= 0.5
+        print(outputs)
+        return output[0]
     
     def printLayers(self):
         for i in range(self.numLayers):
