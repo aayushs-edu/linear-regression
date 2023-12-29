@@ -1,4 +1,4 @@
-from gradient_descent import BatchGradientDescent
+from gradient_descent import GradientDescent
 import random
 from sklearn.metrics import mean_squared_error, r2_score
 random.seed(42)
@@ -11,7 +11,7 @@ y_train = [true_params[0] * x[0] + true_params[1] * x[1] + true_params[2] * x[2]
 learning_rate = 0.01
 num_predictors = len(X_train[0])
 num_dataset_elements = len(X_train)
-bgd = BatchGradientDescent(
+bgd = GradientDescent(
     num_predictors=num_predictors,
     learning_rate=learning_rate,
     num_dataset_elements=num_dataset_elements,

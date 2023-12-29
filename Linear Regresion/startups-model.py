@@ -7,21 +7,22 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
 import numpy as np
 
-from gradient_descent import BatchGradientDescent
+from gradient_descent import GradientDescent
 
-df = pd.read_csv('data/insurance.csv')
+df = pd.read_csv('data/50_Startups.csv')
 
 # For plotting
-xPlot = df['bmi']
-zPlot = df['age']
-yPlot = df['charges']
+xPlot = df['R&D Spend']
+zPlot = df['Marketing Spend']
+yPlot = df['Profit']
 
 
-X = df[['age', 'bmi', 'children']].iloc[:, :].values
-y = df.iloc[:, -1].values
+X = df.iloc[:, :-2].values
+y = df.iloc[:, 4].values
 
 fig = plt.figure()
 ax = plt.axes(projection='3d')
+
 
 scaler = StandardScaler()
 
@@ -29,18 +30,16 @@ X_scaled = scaler.fit_transform(X)
 
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size = 0.2, random_state = 0)
 
-print(X_train)
-
 # ax.scatter3D(xPlot, zPlot, yPlot)
 # ax.set_title('Gradient Descent')
-# ax.set_xlabel('BMI')
-# ax.set_ylabel('Age')
-# ax.set_zlabel('Insurance')
+# ax.set_xlabel(f'{df.columns[0]}')
+# ax.set_ylabel(f'{df.columns[2]}')
+# ax.set_zlabel('Profit')
 
 
-bgd = BatchGradientDescent(X_train.tolist(), y_train.tolist(), 3, 0.1)
+bgd = GradientDescent(X_train.tolist(), y_train.tolist(), 3, 0.5)
 
-bgd.optimizeTheta(50)
+bgd.batchGDVectorized(300)
 
 y_preds = [bgd.h(x) for x in X_test]
 
@@ -52,19 +51,19 @@ comparison = scaler.fit_transform(comparison)
 
 y_test, y_preds = list(zip(*comparison))
 
-print('Mean squared Error: ', mean_squared_error(y_test, y_preds)) 
+# print(mean_squared_error(y_test, y_preds)) 
 
-# x = np.linspace(min(xPlot), max(xPlot), len(xPlot))
-# z = np.linspace(min(zPlot), max(zPlot), len(zPlot))
+x = np.linspace(0, max(xPlot), len(xPlot))
+z = np.linspace(0, max(zPlot), len(zPlot))
 
 # plotInput = X_train.tolist() + X_test.tolist()
 
-# print(bgd.getyInt())
+print(bgd.getyInt())
 
-# plotScaled = scaler.fit_transform(list(zip(x, z)))
+plotScaled = scaler.fit_transform(list(zip(x, z)))
 
 # ax.plot3D(x, z, [bgd.h(x) for x in plotScaled], color ='red')
 
 
 
-# plt.show()
+plt.show()
