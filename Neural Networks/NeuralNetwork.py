@@ -53,10 +53,17 @@ class Node:
         return z if z >= 0 else a * (np.exp(z) - 1)
 
     # useful for multi-class classification problems
-    def softMaxActivation(self, feautres: list[float]) -> float:
-        max_x = np.amax(x, 1).reshape(x.shape[0],1) # Get the row-wise maximum
+    def softMaxActivation(self, features: list[float]) -> float:
+        max_x = np.amax(features, 1).reshape(features.shape[0],1) # Get the row-wise maximum
         e_x = np.exp(x - max_x ) # For stability
         return e_x / e_x.sum(axis=1, keepdims=True)
+
+    # consistently outperforms or performs at the same level as Relu activation
+    # is literally just z * sigmoidActualize(z)
+    def swish(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b 
+        sigmoid = 1 / (1 + np.exp(-z))
+        return z * sigmoid
 
     def setWeights(self, weights : list[float], b):
         self.weights = weights
