@@ -12,6 +12,11 @@ class Node:
         prediction = 1/(1 + np.exp(-z))
         return prediction
     
+    def reluActualize(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.be
+        prediction = max(0, z)
+        return prediction
+
     def setWeights(self, weights : list[float], b):
         self.weights = weights
         self.b = b
