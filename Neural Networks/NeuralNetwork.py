@@ -36,7 +36,17 @@ class Node:
         prediction = max(0.1 * x, x)
         return prediction
 
+    # parametric Relu can be used when leaky Relu doesnt solve the
+    # zero gradient problem for Relu activation
+    # creates problems because the solution is to use a slope value
+    # for negative inputs, but there can be difficulty finding the 
+    # correct slope value
+    def parametricReluActivation(self, features: list[float], a) -> float:
+        z = np.dot(features, self.weights) + self.back
+        prediction = max(a * x, x)
+        return prediction
     
+    # 
 
     def setWeights(self, weights : list[float], b):
         self.weights = weights
