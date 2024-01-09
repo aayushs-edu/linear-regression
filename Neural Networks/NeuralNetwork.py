@@ -27,6 +27,17 @@ class Node:
         prediction = (a - b) / (a + b)
         return prediction
 
+    # enables back propogation for ReLu
+    # enables negative signed inputs, which means
+    # that the gradient on the left side of the activation graph
+    # is non zero, enabling back propogation
+    def leakyReLuActivation(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b 
+        prediction = max(0.1 * x, x)
+        return prediction
+
+    
+
     def setWeights(self, weights : list[float], b):
         self.weights = weights
         self.b = b
