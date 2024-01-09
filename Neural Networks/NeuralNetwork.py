@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import math
 
 class Node:
     
@@ -33,7 +34,7 @@ class Node:
     # is non zero, enabling back propogation
     def leakyReLuActivation(self, features: list[float]) -> float:
         z = np.dot(features, self.weights) + self.b 
-        prediction = max(0.1 * x, x)
+        prediction = max(0.1 * z, z)
         return prediction
 
     # parametric Relu can be used when leaky Relu doesnt solve the
@@ -43,7 +44,7 @@ class Node:
     # correct slope value
     def parametricReluActivation(self, features: list[float], a) -> float:
         z = np.dot(features, self.weights) + self.b
-        prediction = max(a * x, x)
+        prediction = max(a * z, z)
         return prediction
     
     # uses log curve to define negative inputs 
@@ -54,8 +55,9 @@ class Node:
 
     # useful for multi-class classification problems
     def softMaxActivation(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b
         max_x = np.amax(features, 1).reshape(features.shape[0],1) # Get the row-wise maximum
-        e_x = np.exp(x - max_x ) # For stability
+        e_x = np.exp(z - max_x ) # For stability
         return e_x / e_x.sum(axis=1, keepdims=True)
 
     # consistently outperforms or performs at the same level as Relu activation
@@ -64,6 +66,12 @@ class Node:
         z = np.dot(features, self.weights) + self.b 
         sigmoid = 1 / (1 + np.exp(-z))
         return z * sigmoid
+
+    # GELU implementation
+    def geluActivation(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b
+        coefficient = math.sqrt(2 / math.pi)
+        return 0.5 * z * (1 + np.tanh(coefficient * (z + 0.044715 * z**3)))
 
     def setWeights(self, weights : list[float], b):
         self.weights = weights
@@ -140,19 +148,3 @@ class NeuralNetwork:
         for i in range(self.numLayers):
             print(f"Layer {i+1}: ") 
             self.layers[i].printLayer()
-
-        
-
-
-
-        
-
-        
-
-
-
-            
-
-
-
-    
