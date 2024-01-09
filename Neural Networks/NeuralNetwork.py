@@ -42,11 +42,15 @@ class Node:
     # for negative inputs, but there can be difficulty finding the 
     # correct slope value
     def parametricReluActivation(self, features: list[float], a) -> float:
-        z = np.dot(features, self.weights) + self.back
+        z = np.dot(features, self.weights) + self.b
         prediction = max(a * x, x)
         return prediction
     
-    # 
+    # uses log curve to define negative inputs 
+    # a helps define the log curve
+    def eluActivation(self, features: list[float], a) -> float:
+        z = np.dot(features, self.weights) + self.b
+        return z if z >= 0 else a * (np.exp(z) - 1)
 
     def setWeights(self, weights : list[float], b):
         self.weights = weights
