@@ -7,14 +7,24 @@ class Node:
         self.weights = weights
         self.b = b
 
+    # range 0 - 1
     def sigmoidActualize(self, features : list[float]) -> float:
         z = np.dot(features, self.weights) + self.b
         prediction = 1/(1 + np.exp(-z))
         return prediction
     
+    # range 0 - infinity
     def reluActualize(self, features: list[float]) -> float:
-        z = np.dot(features, self.weights) + self.be
+        z = np.dot(features, self.weights) + self.b
         prediction = max(0, z)
+        return prediction
+
+    # range -1 - 1
+    def tanhActivation(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b
+        a = np.exp(z)
+        b = np.exp(-z)
+        prediction = (a - b) / (a + b)
         return prediction
 
     def setWeights(self, weights : list[float], b):
