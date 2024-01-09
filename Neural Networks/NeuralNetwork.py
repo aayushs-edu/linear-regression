@@ -52,6 +52,12 @@ class Node:
         z = np.dot(features, self.weights) + self.b
         return z if z >= 0 else a * (np.exp(z) - 1)
 
+    # useful for multi-class classification problems
+    def softMaxActivation(self, feautres: list[float]) -> float:
+        max_x = np.amax(x, 1).reshape(x.shape[0],1) # Get the row-wise maximum
+        e_x = np.exp(x - max_x ) # For stability
+        return e_x / e_x.sum(axis=1, keepdims=True)
+
     def setWeights(self, weights : list[float], b):
         self.weights = weights
         self.b = b
