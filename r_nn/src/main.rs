@@ -4,6 +4,12 @@ mod nn {
     pub mod node;
 }
 
+mod gradient_descent {
+    pub mod obj;
+    pub mod batch;
+    pub mod stochastic;
+}
+
 use nn::layer::layer::Layer;
 use nn::nn::nn::NeuralNetwork;
 use backtrace::Backtrace;
@@ -51,7 +57,7 @@ fn main() {
     let layers: Vec<Layer> = vec![layer_1, layer_2, layer_3];
     let nn: NeuralNetwork = NeuralNetwork::new(layers);
     let input_layer: Vec<f32> = vec![0.0, 0.0];
-    let prediction = nn.predict(input_layer);
+    let prediction: f32 = nn.predict(input_layer);
     println!("{}", prediction);
 
     // BACKTRACE LOG
