@@ -1,5 +1,4 @@
-mod activations;
-mod nn;
+use crate::nn
 
 fn main() {
     println!("Hello, world!");
