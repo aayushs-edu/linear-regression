@@ -8,6 +8,7 @@ pub mod node {
         arr1.dot(&arr2)
     }
 
+    #[derive(Clone)]
     pub struct Node {
         pub weights: Vec<f32>,
         pub bias: f32
