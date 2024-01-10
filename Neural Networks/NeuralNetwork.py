@@ -5,6 +5,7 @@ class Node:
     
     def __init__(self, weights : list[float], b : float) -> None:
         self.weights = weights
+        self.numWeights = len(weights)
         self.b = b
 
     def sigmoidActualize(self, features : list[float]) -> float:
@@ -15,9 +16,13 @@ class Node:
     def setWeights(self, weights : list[float], b):
         self.weights = weights
         self.b = b
+        self.numWeights = len(weights)
     
     def getWeights(self):
-        return self.weights, self.b
+        return self.weights
+    
+    def getBias(self):
+        return self.b
     
     def __str__(self) -> str:
         return f"Weights: {self.weights}, bias: {self.b}"
@@ -52,9 +57,23 @@ class Layer:
 
         return aVector
     
+    def denseNumpy(self, inputLayer : np.ndarray | list[list[float]]) -> np.ndarray:
+        z = np.matmul(inputLayer, self.getWeights().T) + self.getBiases()
+        out = self.sigmoid(z)
+        return out
+
+    def sigmoid(self, input):
+        return 1/(1 + np.exp(-input))
+    
     def printLayer(self):
         for i in range(self.numNodes):
             print(f"Node {i+1}:", self.nodes[i])
+
+    def getWeights(self):
+        return [node.getWeights() for node in self.nodes]
+    
+    def getBiases(self):
+        return [[node.getBias()] for node in self.nodes]
 
     def getNodes(self):
         return self.nodes
@@ -69,37 +88,21 @@ class NeuralNetwork:
         self.layers.insert(location, layer)
         numLayers+=1
 
-    def predict(self, inputLayer):
+    def predict(self, inputLayer : np.ndarray):
         
         outputs = []
 
         input = inputLayer
         for layer in self.layers:
-            output = [node.sigmoidActualize(input) for node in layer.getNodes()]
+            output = layer.denseNumpy(input)
             outputs.append(output)
 
             input = output
 
         print(outputs)
-        return output[0]
+        return output[-1]
     
     def printLayers(self):
         for i in range(self.numLayers):
             print(f"Layer {i+1}: ") 
             self.layers[i].printLayer()
-
-        
-
-
-
-        
-
-        
-
-
-
-            
-
-
-
-    
