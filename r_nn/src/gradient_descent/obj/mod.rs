@@ -67,7 +67,7 @@ pub mod obj {
             let m: f32 = self.x_train.len() as f32;
             let mut cost: f32 = 0.0;
             for (predictors, output) in self.train_data() {
-                cost += (self.h_given_params(predictors, theta_vector, b) - output) **2
+                cost += (self.h_given_params(predictors, theta_vector, b) - output) ** 2
             }
             cost * 1.0 / (2.0 * m)
         }   
