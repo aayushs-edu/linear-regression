@@ -47,7 +47,30 @@ pub mod obj {
             self.theta_vector.iter().zip(X.iter()).fold(0.0, |acc, (&theta, &x)| acc + theta * x) + self.b
         }
         
-        
+        pub fn h_given_params(&self, X: Vec<f32>, theta_vector: Vec<f32>, b: f32) -> f32 {
+            theta_vector.iter().zip(X.iter()).fold(0.0, |acc, (&theta, &x)| acc + theta * x) + b
+        }
+
+        pub fn get_y(&self) -> f32 {
+            self.b.clone()
+        }
+
+        pub fn get_params(&self) -> Vec<f32> {
+            self.theta_vector.clone()
+        }
+
+        pub fn train_data(&self) -> Vec<(&f32, &f32)> {
+            self.x_train.iter().zip(self.y_train.iter()).collect()
+        }
+
+        pub fn cost(&self, theta_vector: Vec<f32>, b: f32) -> f32 {
+            let m: f32 = self.x_train.len() as f32;
+            let mut cost: f32 = 0.0;
+            for (predictors, output) in self.train_data() {
+                cost += (self.h_given_params(predictors, theta_vector, b) - output) **2
+            }
+            cost * 1.0 / (2.0 * m)
+        }   
 
     }
 }

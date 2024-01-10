@@ -92,4 +92,3 @@ class GradientDescent:
     def trainData(self):
         return list(zip(self.xTrain, self.yTrain))
 
-    
