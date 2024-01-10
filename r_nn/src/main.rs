@@ -6,8 +6,12 @@ mod nn {
 
 use nn::layer::layer::Layer;
 use nn::nn::nn::NeuralNetwork;
+use backtrace::Backtrace;
 
 fn main() {
+
+    // BACKTRACE
+    let bt = Backtrace::new();
 
     // weights and biases
     let w_1: Vec<Vec<f32>> = vec![
@@ -48,6 +52,9 @@ fn main() {
     let nn: NeuralNetwork = NeuralNetwork::new(layers);
     let input_layer: Vec<f32> = vec![0.0, 0.0];
     let prediction = nn.predict(input_layer);
-    println!("{}", prediction)
+    println!("{}", prediction);
+
+    // BACKTRACE LOG
+    println!("{:?}", bt);
 
 }
