@@ -20,12 +20,20 @@ pub mod nn {
             self.layers.insert(location, layer);
             self.num_layers += 1;
         }
-        pub fn predict(&self, input_layer: Vec<f32>) {
+        pub fn predict(&self, input_layer: Vec<f32>) -> f32 {
             let mut outputs: Vec<f32> = Vec::new();
             let input: Vec<f32> = input_layer;
             for layer in &self.layers {
                 let output: Vec<f32> = layer.get_nodes().iter().map(|node| node.sigmoid_actualize(input.clone())).collect();
-                outputs.push(output)
+                outputs.extend(output.clone())
+            }
+            println!("{:?}", outputs);
+            return outputs[outputs.len() - 1];
+        }
+        pub fn print_layers(&self) {
+            for i in 0..self.num_layers {
+                println!("Layer {}", i + 1);
+                self.layers[i].print_layer();
 
             }
         }

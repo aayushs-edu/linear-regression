@@ -1,4 +1,4 @@
-from NeuralNetwork import NeuralNetwork, Node, Layer
+from NeuralNetwork import NeuralNetwork, Layer
 import numpy as np
 
 
