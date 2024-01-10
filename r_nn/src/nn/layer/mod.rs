@@ -1,7 +1,6 @@
 pub mod layer {
     use crate::nn::node::node::Node;
     use rand::Rng;
-    use itertools::izip;
 
     pub struct Layer {
         pub nodes: Vec<Node>,
