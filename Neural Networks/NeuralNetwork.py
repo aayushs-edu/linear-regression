@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import math
 
 class Node:
     
@@ -8,11 +9,71 @@ class Node:
         self.numWeights = len(weights)
         self.b = b
 
+    # range 0 - 1
     def sigmoidActualize(self, features : list[float]) -> float:
         z = np.dot(features, self.weights) + self.b
         prediction = 1/(1 + np.exp(-z))
         return prediction
     
+    # range 0 - infinity
+    def reluActualize(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b
+        prediction = max(0, z)
+        return prediction
+
+    # range -1 - 1
+    def tanhActivation(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b
+        a = np.exp(z)
+        b = np.exp(-z)
+        prediction = (a - b) / (a + b)
+        return prediction
+
+    # enables back propogation for ReLu
+    # enables negative signed inputs, which means
+    # that the gradient on the left side of the activation graph
+    # is non zero, enabling back propogation
+    def leakyReLuActivation(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b 
+        prediction = max(0.1 * z, z)
+        return prediction
+
+    # parametric Relu can be used when leaky Relu doesnt solve the
+    # zero gradient problem for Relu activation
+    # creates problems because the solution is to use a slope value
+    # for negative inputs, but there can be difficulty finding the 
+    # correct slope value
+    def parametricReluActivation(self, features: list[float], a) -> float:
+        z = np.dot(features, self.weights) + self.b
+        prediction = max(a * z, z)
+        return prediction
+    
+    # uses log curve to define negative inputs 
+    # a helps define the log curve
+    def eluActivation(self, features: list[float], a) -> float:
+        z = np.dot(features, self.weights) + self.b
+        return z if z >= 0 else a * (np.exp(z) - 1)
+
+    # useful for multi-class classification problems
+    def softMaxActivation(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b
+        max_x = np.amax(features, 1).reshape(features.shape[0],1) # Get the row-wise maximum
+        e_x = np.exp(z - max_x ) # For stability
+        return e_x / e_x.sum(axis=1, keepdims=True)
+
+    # consistently outperforms or performs at the same level as Relu activation
+    # is literally just z * sigmoidActualize(z)
+    def swish(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b 
+        sigmoid = 1 / (1 + np.exp(-z))
+        return z * sigmoid
+
+    # GELU implementation
+    def geluActivation(self, features: list[float]) -> float:
+        z = np.dot(features, self.weights) + self.b
+        coefficient = math.sqrt(2 / math.pi)
+        return 0.5 * z * (1 + np.tanh(coefficient * (z + 0.044715 * z**3)))
+
     def setWeights(self, weights : list[float], b):
         self.weights = weights
         self.b = b

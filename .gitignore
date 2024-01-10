@@ -1,2 +1,4 @@
 *.txt
-/data
+__pycache__/
+data/
+r_nn/target/
