@@ -9,7 +9,7 @@ pub mod stochastic {
             for j in 0..gd.num_predictors {
                 let mut sum: f32 = 0.0;
                 for (predictors, output) in gd.train_data() {
-                    sum += (gd.h(predictors))
+                    sum += (gd.h(predictors.to_vec()) - output) * predictors[j]
                 }
             }
         }
