@@ -7,13 +7,13 @@ pub mod batch {
 
         for i in 0..epochs {
             for (predictor, output) in gd.train_data() {
-                let error = gd.h(predictor) - output;
+                let error = gd.h(predictor.clone()) - output;
                 for j in 0..gd.num_predictors {
                     gd.theta_vector[j] -= (gd.learning_rate / m as f32) * error * predictor[j]
                 }
                 gd.b -= (gd.learning_rate / m as f32) * error
             }
-            println!("Epoch: {}, Theta Vector: {:#?}, Cost: {}", i, gd.theta_vector, gd.cost(gd.theta_vector, gd.b))
+            println!("Epoch: {}, Theta Vector: {:#?}, Cost: {}", i, gd.theta_vector, gd.cost(gd.theta_vector.clone(), gd.b))
         }
     }
 
