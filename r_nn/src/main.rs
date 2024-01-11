@@ -38,7 +38,7 @@ fn main() {
     ];
 
     let w_3: Vec<Vec<f32>> = vec![
-        vec![0.05, 0.2, 0.5]
+        vec![0.05, 0.2]
     ];
 
     let b_1: Vec<f32> = vec![
@@ -71,7 +71,8 @@ fn main() {
     let nn: NeuralNetwork = NeuralNetwork::new(layers);
     let input_layer: Vec<f32> = vec![0.0, 0.0];
     let prediction: f32 = nn.predict(input_layer);
-    println!("{}", prediction);
+    println!("\n");
+    println!("PREDICTION: {}", prediction);
 
     // BACKTRACE LOG
     println!("{:?}", bt);
