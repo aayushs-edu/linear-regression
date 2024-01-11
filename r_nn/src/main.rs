@@ -10,12 +10,15 @@ mod gradient_descent {
     pub mod batch;
 }
 
+mod adam;
+
 use nn::layer::layer::Layer;
 use nn::nn::nn::NeuralNetwork;
 use backtrace::Backtrace;
 use gradient_descent::obj::obj::GradientDescent;
 use gradient_descent::stochastic::stochastic::stochastic_vect;
 use gradient_descent::batch::batch::{batch, batch_vectorized};
+use adam::adam::adam_optimize;
 
 fn main() {
 
