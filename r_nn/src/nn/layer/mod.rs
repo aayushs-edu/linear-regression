@@ -2,6 +2,7 @@ pub mod layer {
     use crate::nn::node::node::Node;
     use rand::Rng;
 
+    #[derive(Clone)]
     pub struct Layer {
         pub nodes: Vec<Node>,
         pub num_nodes: usize

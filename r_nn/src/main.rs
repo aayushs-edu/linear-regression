@@ -18,7 +18,7 @@ use backtrace::Backtrace;
 use gradient_descent::obj::obj::GradientDescent;
 use gradient_descent::stochastic::stochastic::stochastic_vect;
 use gradient_descent::batch::batch::{batch, batch_vectorized};
-use adam::adam::adam_optimize;
+use adam::adam::Adam;
 
 fn main() {
 
@@ -61,6 +61,13 @@ fn main() {
     layer_3.set_all_weights(w_3, b_3);
 
     let layers: Vec<Layer> = vec![layer_1, layer_2, layer_3];
+    let mut i: i8 = 1;
+    for layer in layers.clone() {
+        println!("LAYER: {}", i);
+        i += 1;
+        layer.print_layer()
+    }
+
     let nn: NeuralNetwork = NeuralNetwork::new(layers);
     let input_layer: Vec<f32> = vec![0.0, 0.0];
     let prediction: f32 = nn.predict(input_layer);

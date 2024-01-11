@@ -1,4 +1,6 @@
 pub mod nn {
+    use core::num;
+
     use crate::nn::layer::layer::Layer;
 
     pub struct NeuralNetwork {
@@ -11,6 +13,7 @@ pub mod nn {
         /// Creates a new Neural Network object with an input Vec<Layer>
         pub fn new(layers: Vec<Layer>) -> NeuralNetwork {
             let num_layers: usize = layers.len();
+            println!("CREATED NEURAL NETWORK OBJECT WITH NUM_LAYERS: {}", num_layers);
             NeuralNetwork {
                 layers,
                 num_layers
@@ -23,7 +26,10 @@ pub mod nn {
         pub fn predict(&self, input_layer: Vec<f32>) -> f32 {
             let mut outputs: Vec<f32> = Vec::new();
             let input: Vec<f32> = input_layer;
+            let mut index: i32 = 1;
             for layer in &self.layers {
+                println!("activating nodes in hidden layer {}", index);
+                index += 1;
                 let output: Vec<f32> = layer.get_nodes().iter().map(|node| node.sigmoid_actualize(input.clone())).collect();
                 outputs.extend(output.clone())
             }
