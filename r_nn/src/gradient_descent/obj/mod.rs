@@ -59,14 +59,19 @@ pub mod obj {
         }
 
         pub fn train_data(&self) -> Vec<(Vec<f32>, f32)> {
-            self.x_train.iter().cloned().zip(self.y_train.iter().cloned()).collect()
+            self.x_train
+                .iter()
+                .cloned()
+                .zip(self.y_train.iter().cloned())
+                .map(|(predictors, output)| (vec![predictors], output))
+                .collect()
         }
 
         pub fn cost(&self, theta_vector: Vec<f32>, b: f32) -> f32 {
             let m: f32 = self.x_train.len() as f32;
             let mut cost: f32 = 0.0;
             for (predictors, output) in self.train_data() {
-                cost += (self.h_given_params(predictors.to_vec(), theta_vector, b) - output).powf(2.0);
+                cost += (self.h_given_params(predictors.to_vec(), theta_vector.clone(), b) - output).powf(2.0);
             }
             cost * 1.0 / (2.0 * m)
         }   
