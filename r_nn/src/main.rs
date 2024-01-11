@@ -6,13 +6,16 @@ mod nn {
 
 mod gradient_descent {
     pub mod obj;
-    pub mod batch;
     pub mod stochastic;
+    pub mod batch;
 }
 
 use nn::layer::layer::Layer;
 use nn::nn::nn::NeuralNetwork;
 use backtrace::Backtrace;
+use gradient_descent::obj::obj::GradientDescent;
+use gradient_descent::stochastic::stochastic::stochastic_vect;
+use gradient_descent::batch::batch::{batch, batch_vectorized};
 
 fn main() {
 
