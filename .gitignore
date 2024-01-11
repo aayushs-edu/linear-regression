@@ -1,4 +1,4 @@
+./r_nn/target/
+.vscode
+/data
 *.txt
-__pycache__/
-data/
-r_nn/target/
