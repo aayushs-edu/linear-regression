@@ -10,10 +10,12 @@ pub mod adam {
     
     pub struct Adam {
         gd: GradientDescent,
-        stepsize: f64,
-        beta_1: f64,
-        beta_2: f64,
-        epsilon: f64
+        pub stepsize: f64,
+        pub beta_1: f64,
+        pub beta_2: f64,
+        pub epsilon: f64,
+        pub m_b: f64,
+        pub v_b: f64
     }
 
     impl Adam {
@@ -43,7 +45,9 @@ pub mod adam {
                     stepsize,
                     beta_1,
                     beta_2,
-                    epsilon
+                    epsilon,
+                    m_b: 0.0,
+                    v_b: 0.0
                 }
             } else {
                 println!("Using specified Adam parameters: alpha: {}, beta 1: {}, beta 2: {}, epsilon: {}", stepsize, beta_1, beta_2, epsilon);
@@ -52,7 +56,23 @@ pub mod adam {
                     stepsize,
                     beta_1,
                     beta_2,
-                    epsilon
+                    epsilon,
+                    m_b: 0.0,
+                    v_b: 0.0
+                }
+            }
+        }
+
+        pub fn optimize(&mut self, epochs: usize) {
+            let m: f64 = self.gd.x_train.len() as f64;
+            for epoch in 0..epochs {
+                for (predictor, output) in self.gd.train_data() {
+                    let error = self.gd.h(predictor.clone()) - output;
+                    let gradients: Vec<f64> = predictor
+                        .iter()
+                        .enumerate()
+                        .map(|(j, &x)| (self.gd.learning_rate / m) * error * x)
+                        .collect();
                 }
             }
         }

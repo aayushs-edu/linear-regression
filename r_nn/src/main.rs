@@ -73,6 +73,7 @@ fn main() {
     let prediction: f32 = nn.predict(input_layer);
     println!("\n");
     println!("PREDICTION: {}", prediction);
+    println!("\n");
 
     // BACKTRACE LOG
     println!("{:?}", bt);
