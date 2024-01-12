@@ -77,7 +77,7 @@ pub mod obj {
             cost * 1.0 / (2.0 * m)
         }   
 
-        pub fn adam_update(&mut self, mut adam: &Adam, gradients: Vec<f64>, epoch: usize) {
+        pub fn adam_update(&mut self, adam: &mut Adam, gradients: Vec<f64>, epoch: usize) {
             let mut m: Vec<f64> = vec![0.0; self.num_predictors];
             let mut v: Vec<f64> = vec![0.0; self.num_predictors];
             let beta_1_pow: f64 = adam.beta_1.powi(epoch as i32);
