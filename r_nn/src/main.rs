@@ -12,6 +12,8 @@ mod gradient_descent {
 
 mod adam;
 
+use core::num;
+
 use nn::layer::layer::Layer;
 use nn::nn::nn::NeuralNetwork;
 use backtrace::Backtrace;
@@ -19,6 +21,20 @@ use gradient_descent::obj::obj::GradientDescent;
 use gradient_descent::stochastic::stochastic::stochastic_vect;
 use gradient_descent::batch::batch::{batch, batch_vectorized};
 use adam::adam::Adam;
+use std::fs::{File, OpenOptions};
+use std::io::{Write, Error};
+
+fn file_save(data: String) -> Result<(), Error> {
+    let file_path = "C:/Users/ellio/OneDrive/Documents/GitHub/linear-regression/log.txt";
+    let mut file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(file_path)?;
+    file.write_all(data.as_bytes())?;
+    file.write(b"\n\n")?;
+    Ok(())
+}
+
 
 fn main() {
 
@@ -74,6 +90,47 @@ fn main() {
     println!("\n");
     println!("PREDICTION: {}", prediction);
     println!("\n");
+
+    let x_train: Vec<f64> = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+    let y_train: Vec<f64> = vec![2.0, 4.0, 5.0, 4.5, 5.5];
+    let learning_rate: f64 = 0.01;
+    let num_predictors: usize = x_train.len();
+    let gd: GradientDescent = GradientDescent::new(
+        x_train.clone(),
+        y_train.clone(),
+        num_predictors,
+        learning_rate
+    );
+
+    let stepsize: f64 = 0.001;
+    let beta_1: f64 = 0.9;
+    let beta_2: f64 = 0.009;
+    let epsilon: f64 = 1e-8;
+    let default: bool = true;
+    let gd_clone: GradientDescent = gd.clone();
+    let mut adam: Adam = Adam::new(
+        gd_clone,
+        default,
+        stepsize,
+        beta_1,
+        beta_2,
+        epsilon
+    );
+
+    let epochs: usize = 100;
+    adam.optimize(epochs);
+    println!("\n\n\n");
+    println!("Final Weights: {:?}", gd.get_params());
+    println!("Final Bias: {:?}", gd.get_y());
+    println!("\n\n\n");
+
+    // log
+    let mut log_data: String = String::new();
+    log_data.push_str("Final Weights: ");
+    log_data.push_str(&format!("{:?}", gd.get_params()));
+    log_data.push_str("\nFinal Bias: ");
+    log_data.push_str(&format!("{:?}", gd.get_y()));
+    file_save(log_data);
 
     // BACKTRACE LOG
     println!("{:?}", bt);

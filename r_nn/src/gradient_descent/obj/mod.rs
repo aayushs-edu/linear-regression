@@ -83,11 +83,21 @@ pub mod obj {
             let beta_1_pow: f64 = adam.beta_1.powi(epoch as i32);
             let beta_2_pow: f64 = adam.beta_2.powi(epoch as i32);
             for i in 0..self.num_predictors {
-                m[i] = adam.beta_1 * m[i] + (1.0 - adam.beta_1) * gradients[i];
-                v[i] = adam.beta_2 * v[i] + (1.0 - adam.beta_2) * gradients[i].powi(2);
-                let m_hat: f64 = m[i] / (1.0 - beta_1_pow);
-                let v_hat: f64 = v[i] / (1.0 - beta_2_pow);
-                self.theta_vector[i] -= self.learning_rate * m_hat / (v_hat.sqrt() + adam.epsilon);
+                if i < gradients.len() {
+                    m[i] = adam.beta_1 * m[i] + (1.0 - adam.beta_1) * gradients[i];
+                    println!("EPOCH {} Updating m[i]", i);
+                    v[i] = adam.beta_2 * v[i] + (1.0 - adam.beta_2) * gradients[i].powi(2);
+                    println!("EPOCH {} Updated v[i]", i);
+                    let m_hat: f64 = m[i] / (1.0 - beta_1_pow);
+                    println!("EPOCH {} Calculated m_hat", i);
+                    let v_hat: f64 = v[i] / (1.0 - beta_2_pow);
+                    println!("EPOCH {} Calculated v_hat", i);
+                    self.theta_vector[i] -= self.learning_rate * m_hat / (v_hat.sqrt() + adam.epsilon);
+                    println!("EPOCH {} Updated theta vector", i);
+                } else {
+                    println!("Made it to break case");
+                    break;
+                }
             }
             let gradient_b: f64 = gradients.iter().map(|&x| x).sum();
             adam.m_b = adam.beta_1 * adam.m_b + (1.0 - adam.beta_1) * gradient_b;
