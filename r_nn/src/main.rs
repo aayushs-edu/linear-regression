@@ -86,15 +86,15 @@ fn main() {
     let mut layer_1: Layer = Layer::new(4, w_1_flat.len());
     println!("W Flat Len: {}", w_1_flat.len());
     println!("B Flat Len: {}", b_1.len());
-    layer_1.set_all_weights(w_1_flat, b_1);
+    layer_1.set_all_weights(w_1_flat, b_1, false);
     let mut layer_2: Layer = Layer::new(4, w_2_flat.len());
     println!("W 2 Flat Len: {}", w_2_flat.len());
     println!("B 2 Flat Len: {}", b_2.len());
-    layer_2.set_all_weights(w_2_flat, b_2);
+    layer_2.set_all_weights(w_2_flat, b_2, false);
     let mut layer_3: Layer = Layer::new(4, w_3_flat.len());
     println!("W 3 Flat Len: {}", w_3_flat.len());
     println!("B 3 Flat Len: {}", b_3.len());
-    layer_3.set_all_weights(w_3_flat, b_3);
+    layer_3.set_all_weights(w_3_flat, b_3, false);
 
     let layers: Vec<Layer> = vec![layer_1, layer_2, layer_3];
     let mut i: i8 = 1;
@@ -111,8 +111,10 @@ fn main() {
     println!("PREDICTION: {}", prediction);
     println!("\n");
 
-    let x_train: Vec<f64> = (1..=75).map(|x| x as f64).collect();
+    let x_train: Vec<f64> = vec![1.0, 2.0, 3.0, 4.0];
     let y_train: Vec<f64> = x_train.iter().map(|&x| 2.0 * x + 1.0 + rand::thread_rng().gen_range(-1.0..1.0)).collect();
+    println!("X Train Size: {}", x_train.len());
+    println!("Y Train Size: {}", y_train.len());
 
     let learning_rate: f64 = 0.01;
     let num_predictors: usize = x_train.len();
@@ -156,7 +158,10 @@ fn main() {
     file_save(log_data);
 
     // view layers
+    println!("\n\n");
+    println!("OPTIMIZED LAYERS");
     nn.print_layers();
+    println!("\n\n");
 
     // BACKTRACE LOG
     println!("{:?}", bt);

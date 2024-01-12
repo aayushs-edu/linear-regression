@@ -40,10 +40,13 @@ pub mod obj {
         
         pub fn update_neural_net(&mut self) {
             println!("Updating Neural Network");
-            let mut self_clone = self.clone();
+            let self_clone = self.clone();
             for (i, layer) in self.neural_net.layers.iter_mut().enumerate() {
+                self_clone.neural_net.print_layers();
                 let (weights, bias) = self_clone.get_params_for_layer(i);
-                layer.set_all_weights(weights.clone().into_iter().flatten().collect(), bias.clone());
+                println!("Weights: {:#?}", weights);
+                println!("Bias: {:?}", bias);
+                layer.set_all_weights(weights.clone().into_iter().flatten().collect(), bias.clone(), true);
                 println!("Set layer weights: {:#?}", weights);
                 println!("Set layer bias: {:?}", bias);
             }
@@ -53,6 +56,9 @@ pub mod obj {
             let weights_start: usize = layer_index * self.num_predictors;
             let weights_end: usize = std::cmp::min(weights_start + self.num_predictors, self.theta_vector.len());
             let bias_index: usize = self.theta_vector.len() - 1;
+            println!("Weights Start: {}", weights_start);
+            println!("Weights End: {}", weights_end);
+            println!("Bias Index: {}", bias_index);
             let weights: Vec<Vec<f64>> = self.theta_vector[weights_start..weights_end]
                 .chunks(self.num_predictors)
                 .map(|chunk| chunk.to_vec())
