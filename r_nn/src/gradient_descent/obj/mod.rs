@@ -2,10 +2,12 @@
 
 pub mod obj {
     use crate::adam::adam::Adam;
+    use crate::nn::nn::nn::NeuralNetwork;
     use rand::Rng;
 
     #[derive(Clone)]
     pub struct GradientDescent {
+        pub neural_net: NeuralNetwork,
         pub theta_vector: Vec<f64>,
         pub b: f64,
         pub learning_rate: f64,
@@ -17,7 +19,7 @@ pub mod obj {
     impl GradientDescent {
 
         /// Creates a new GradientDescent object
-        pub fn new(x_train: Vec<f64>, y_train: Vec<f64>, num_predictors: usize, learning_rate: f64) -> GradientDescent {
+        pub fn new(neural_net: NeuralNetwork, x_train: Vec<f64>, y_train: Vec<f64>, num_predictors: usize, learning_rate: f64) -> GradientDescent {
 
             let mut theta_vector: Vec<f64> = Vec::with_capacity(num_predictors);
             let mut rng: rand::prelude::ThreadRng = rand::thread_rng();
@@ -26,6 +28,7 @@ pub mod obj {
             let b: f64 = rng.gen_range(0.0..1.0);
 
             GradientDescent {
+                neural_net,
                 theta_vector,
                 b,
                 learning_rate,
@@ -35,6 +38,26 @@ pub mod obj {
             }
         }
         
+        pub fn update_neural_net(&mut self) {
+            let mut self_clone = self.clone();
+            for (i, layer) in self.neural_net.layers.iter_mut().enumerate() {
+                let (weights, bias) = self_clone.get_params_for_layer(i);
+                layer.set_all_weights(weights, bias);
+            }
+        }
+
+        pub fn get_params_for_layer(&self, layer_index: usize) -> (Vec<Vec<f64>>, Vec<f64>) {
+            let weights_start: usize = layer_index * self.num_predictors;
+            let weights_end: usize = weights_start + self.num_predictors;
+            let bias_index: usize = self.theta_vector.len() - 1;
+            let weights: Vec<Vec<f64>> = self.theta_vector[weights_start..weights_end]
+                .chunks(self.num_predictors)
+                .map(|chunk| chunk.to_vec())
+                .collect();
+            let bias: Vec<f64> = vec![self.theta_vector[bias_index]];
+            (weights, bias)
+        }
+
         pub fn h(&self, X: Vec<f64>) -> f64 {
             let mut result: f64 = 0.0;
             for (i, x) in X.iter().enumerate() {

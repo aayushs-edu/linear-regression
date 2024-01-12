@@ -4,12 +4,14 @@ pub mod adam {
     /// Src: https://arxiv.org/abs/1412.6980
 
     use crate::gradient_descent::obj::obj::GradientDescent;
-    use std::borrow::Borrow;
-    use crate::batch;
-    use crate::batch_vectorized;
-    use crate::stochastic_vect;
+    use crate::nn::nn::nn::NeuralNetwork;
+    //use std::borrow::Borrow;
+    //use crate::batch;
+    //use crate::batch_vectorized;
+    //use crate::stochastic_vect;
     
     pub struct Adam {
+        nn: NeuralNetwork,
         gd: GradientDescent,
         pub stepsize: f64,
         pub beta_1: f64,
@@ -34,7 +36,7 @@ pub mod adam {
         /// beta_1 & beta_2: exponential decay rates for the moment estimates
         /// 
         /// epsilon: small constant used to avoid division by zero when calculating RMS of the gradients
-        pub fn new(gd: GradientDescent, default: bool, stepsize: f64, beta_1: f64, beta_2: f64, epsilon: f64) -> Adam {
+        pub fn new(nn: NeuralNetwork, gd: GradientDescent, default: bool, stepsize: f64, beta_1: f64, beta_2: f64, epsilon: f64) -> Adam {
             if default {
                 let stepsize: f64 = 0.0001;
                 let beta_1: f64 = 0.9;
@@ -42,6 +44,7 @@ pub mod adam {
                 let epsilon: f64 = 1e-8;
                 println!("Loading default Adam parameters: alpha: {}, beta 1: {}, beta 2: {}, epsilon: {}", stepsize, beta_1, beta_2, epsilon);
                 Adam {
+                    nn,
                     gd,
                     stepsize,
                     beta_1,
@@ -53,6 +56,7 @@ pub mod adam {
             } else {
                 println!("Using specified Adam parameters: alpha: {}, beta 1: {}, beta 2: {}, epsilon: {}", stepsize, beta_1, beta_2, epsilon);
                 Adam {
+                    nn,
                     gd,
                     stepsize,
                     beta_1,
@@ -83,7 +87,8 @@ pub mod adam {
                     gd.theta_vector,
                     gd.b,
                     gd.cost(gd.theta_vector.clone(), gd.b)
-                )
+                );
+                self.gd.update_neural_net()
             }
         }
     }

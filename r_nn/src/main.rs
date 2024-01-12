@@ -43,38 +43,45 @@ fn main() {
     let bt = Backtrace::new();
 
     // weights and biases
-    let w_1: Vec<Vec<f32>> = vec![
+    let w_1: Vec<Vec<f64>> = vec![
         vec![0.5, 0.6],
         vec![0.7, 0.8]
     ];
 
-    let w_2: Vec<Vec<f32>> = vec![
+    let w_2: Vec<Vec<f64>> = vec![
         vec![0.7, 0.23],
         vec![0.1, 0.4],
         vec![0.3, 1.5]
     ];
 
-    let w_3: Vec<Vec<f32>> = vec![
+    let w_3: Vec<Vec<f64>> = vec![
         vec![0.05, 0.2]
     ];
 
-    let b_1: Vec<f32> = vec![
+    let b_1: Vec<f64> = vec![
         0.07, 0.05
     ];
 
-    let b_2: Vec<f32> = vec![
+    let b_2: Vec<f64> = vec![
         0.2, 0.5, 0.01
     ];
 
-    let b_3: Vec<f32> = vec![
+    let b_3: Vec<f64> = vec![
         0.03
     ];
 
-    let mut layer_1: Layer = Layer::new(2);
+    /*
+    In this instantiation of the layers for the neural network,
+    the number of features is being hard coded to 2.
+    This is something that needs to be changed in the future, but 
+    for now, it will work fine.
+     */
+
+    let mut layer_1: Layer = Layer::new(2, 2);
     layer_1.set_all_weights(w_1, b_1);
-    let mut layer_2: Layer = Layer::new(3);
+    let mut layer_2: Layer = Layer::new(3, 2);
     layer_2.set_all_weights(w_2, b_2);
-    let mut layer_3: Layer = Layer::new(1);
+    let mut layer_3: Layer = Layer::new(1, 2);
     layer_3.set_all_weights(w_3, b_3);
 
     let layers: Vec<Layer> = vec![layer_1, layer_2, layer_3];
@@ -86,18 +93,19 @@ fn main() {
     }
 
     let nn: NeuralNetwork = NeuralNetwork::new(layers);
-    let input_layer: Vec<f32> = vec![0.0, 0.0];
-    let prediction: f32 = nn.predict(input_layer);
+    let input_layer: Vec<f64> = vec![0.0, 0.0];
+    let prediction: f64 = nn.predict(input_layer);
     println!("\n");
     println!("PREDICTION: {}", prediction);
     println!("\n");
 
-    let x_train: Vec<f64> = (1..=1000).map(|x| x as f64).collect();
+    let x_train: Vec<f64> = (1..=75).map(|x| x as f64).collect();
     let y_train: Vec<f64> = x_train.iter().map(|&x| 2.0 * x + 1.0 + rand::thread_rng().gen_range(-1.0..1.0)).collect();
 
     let learning_rate: f64 = 0.01;
     let num_predictors: usize = x_train.len();
     let gd: GradientDescent = GradientDescent::new(
+        nn.clone(),
         x_train.clone(),
         y_train.clone(),
         num_predictors,
@@ -111,6 +119,7 @@ fn main() {
     let default: bool = true;
     let gd_clone: GradientDescent = gd.clone();
     let mut adam: Adam = Adam::new(
+        nn.clone(),
         gd_clone,
         default,
         stepsize,
@@ -133,6 +142,9 @@ fn main() {
     log_data.push_str("\nFinal Bias: ");
     log_data.push_str(&format!("{:?}", gd.get_y()));
     file_save(log_data);
+
+    // view layers
+    nn.print_layers();
 
     // BACKTRACE LOG
     println!("{:?}", bt);
