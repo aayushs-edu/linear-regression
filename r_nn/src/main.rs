@@ -48,15 +48,21 @@ fn main() {
         vec![0.7, 0.8]
     ];
 
+    let w_1_flat: Vec<f64> = w_1.into_iter().flatten().collect();
+
     let w_2: Vec<Vec<f64>> = vec![
         vec![0.7, 0.23],
         vec![0.1, 0.4],
         vec![0.3, 1.5]
     ];
 
+    let w_2_flat: Vec<f64> = w_2.into_iter().flatten().collect();
+
     let w_3: Vec<Vec<f64>> = vec![
         vec![0.05, 0.2]
     ];
+
+    let w_3_flat: Vec<f64> = w_3.into_iter().flatten().collect();
 
     let b_1: Vec<f64> = vec![
         0.07, 0.05
@@ -78,11 +84,11 @@ fn main() {
      */
 
     let mut layer_1: Layer = Layer::new(2, 2);
-    layer_1.set_all_weights(w_1, b_1);
+    layer_1.set_all_weights(w_1_flat, b_1);
     let mut layer_2: Layer = Layer::new(3, 2);
-    layer_2.set_all_weights(w_2, b_2);
+    layer_2.set_all_weights(w_2_flat, b_2);
     let mut layer_3: Layer = Layer::new(1, 2);
-    layer_3.set_all_weights(w_3, b_3);
+    layer_3.set_all_weights(w_3_flat, b_3);
 
     let layers: Vec<Layer> = vec![layer_1, layer_2, layer_3];
     let mut i: i8 = 1;

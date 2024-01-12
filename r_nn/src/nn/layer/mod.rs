@@ -26,15 +26,19 @@ pub mod layer {
         pub fn set_weights(&mut self, index: usize, weights: Vec<f64>, bias: f64) {
             self.nodes[index].set_weights(weights, bias)
         }
-        pub fn set_all_weights(&mut self, weights: Vec<Vec<f64>>, biases: Vec<f64>) {
-            if weights.len() != biases.len() {
-                panic!("Weights and bias lists must be the same length!")
+        pub fn set_all_weights(&mut self, weights: Vec<f64>, biases: Vec<f64>) {
+            if self.num_nodes != weights.len() || biases.len() != 1 {
+                println!("WEIGHTS len: {}", weights.len());
+                println!("BIAS len: {}", biases.len());
+                panic!("Weights and bias lists must match layer size!");
             }
-            for i in 0..std::cmp::min(self.num_nodes, weights.len()) {
-                self.nodes[i].set_weights(weights[i].clone(), biases[i]);
-                println!("Done setting weights for Node {}", i)
+        
+            for i in 0..self.num_nodes {
+                self.nodes[i].set_weights(weights.clone(), biases[0]);
+                println!("Done setting weights for Node {}", i);
             }
         }
+        
         pub fn execute(&self, input_layer: Vec<f64>) -> Vec<f64> {
             let num_features: usize = input_layer.len();
             let mut a_vector: Vec<f64> = Vec::new();
