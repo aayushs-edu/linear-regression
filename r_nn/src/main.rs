@@ -65,11 +65,11 @@ fn main() {
     let w_3_flat: Vec<f64> = w_3.into_iter().flatten().collect();
 
     let b_1: Vec<f64> = vec![
-        0.07, 0.05
+        0.07
     ];
 
     let b_2: Vec<f64> = vec![
-        0.2, 0.5, 0.01
+        0.2
     ];
 
     let b_3: Vec<f64> = vec![
@@ -83,11 +83,17 @@ fn main() {
     for now, it will work fine.
      */
 
-    let mut layer_1: Layer = Layer::new(2, 2);
+    let mut layer_1: Layer = Layer::new(4, w_1_flat.len());
+    println!("W Flat Len: {}", w_1_flat.len());
+    println!("B Flat Len: {}", b_1.len());
     layer_1.set_all_weights(w_1_flat, b_1);
-    let mut layer_2: Layer = Layer::new(3, 2);
+    let mut layer_2: Layer = Layer::new(6, w_2_flat.len());
+    println!("W 2 Flat Len: {}", w_2_flat.len());
+    println!("B 2 Flat Len: {}", b_2.len());
     layer_2.set_all_weights(w_2_flat, b_2);
-    let mut layer_3: Layer = Layer::new(1, 2);
+    let mut layer_3: Layer = Layer::new(2, w_3_flat.len());
+    println!("W 3 Flat Len: {}", w_3_flat.len());
+    println!("B 3 Flat Len: {}", b_3.len());
     layer_3.set_all_weights(w_3_flat, b_3);
 
     let layers: Vec<Layer> = vec![layer_1, layer_2, layer_3];

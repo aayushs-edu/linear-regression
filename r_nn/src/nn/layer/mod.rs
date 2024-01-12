@@ -30,6 +30,7 @@ pub mod layer {
             if self.num_nodes != weights.len() || biases.len() != 1 {
                 println!("WEIGHTS len: {}", weights.len());
                 println!("BIAS len: {}", biases.len());
+                println!("LAYER size: {}", self.num_nodes);
                 panic!("Weights and bias lists must match layer size!");
             }
         
