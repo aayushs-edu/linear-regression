@@ -4,6 +4,7 @@ pub mod adam {
     /// Src: https://arxiv.org/abs/1412.6980
 
     use crate::gradient_descent::obj::obj::GradientDescent;
+    use std::borrow::Borrow;
     use crate::batch;
     use crate::batch_vectorized;
     use crate::stochastic_vect;
@@ -65,6 +66,7 @@ pub mod adam {
 
         pub fn optimize(&mut self, epochs: usize) {
             let m: f64 = self.gd.x_train.len() as f64;
+            let mut gd = self.gd.clone();
             for epoch in 0..epochs {
                 for (predictor, output) in self.gd.train_data() {
                     let error = self.gd.h(predictor.clone()) - output;
@@ -73,7 +75,15 @@ pub mod adam {
                         .enumerate()
                         .map(|(j, &x)| (self.gd.learning_rate / m) * error * x)
                         .collect();
+                    gd.adam_update(self, gradients, epoch)
                 }
+                println!(
+                    "Epoch: {}, Theta Vector: {:#?}, Bias: {}, Cost: {}",
+                    epoch,
+                    gd.theta_vector,
+                    gd.b,
+                    gd.cost(gd.theta_vector.clone(), gd.b)
+                )
             }
         }
     }
