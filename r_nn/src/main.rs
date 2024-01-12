@@ -21,8 +21,9 @@ use gradient_descent::obj::obj::GradientDescent;
 use gradient_descent::stochastic::stochastic::stochastic_vect;
 use gradient_descent::batch::batch::{batch, batch_vectorized};
 use adam::adam::Adam;
-use std::fs::{File, OpenOptions};
+use std::fs::OpenOptions;
 use std::io::{Write, Error};
+use rand::Rng;
 
 fn file_save(data: String) -> Result<(), Error> {
     let file_path = "C:/Users/ellio/OneDrive/Documents/GitHub/linear-regression/log.txt";
@@ -91,8 +92,9 @@ fn main() {
     println!("PREDICTION: {}", prediction);
     println!("\n");
 
-    let x_train: Vec<f64> = vec![1.0, 2.0, 3.0, 4.0, 5.0];
-    let y_train: Vec<f64> = vec![2.0, 4.0, 5.0, 4.5, 5.5];
+    let x_train: Vec<f64> = (1..=1000).map(|x| x as f64).collect();
+    let y_train: Vec<f64> = x_train.iter().map(|&x| 2.0 * x + 1.0 + rand::thread_rng().gen_range(-1.0..1.0)).collect();
+
     let learning_rate: f64 = 0.01;
     let num_predictors: usize = x_train.len();
     let gd: GradientDescent = GradientDescent::new(
