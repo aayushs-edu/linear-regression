@@ -53,13 +53,13 @@ fn main() {
     let w_2: Vec<Vec<f64>> = vec![
         vec![0.7, 0.23],
         vec![0.1, 0.4],
-        vec![0.3, 1.5]
     ];
 
     let w_2_flat: Vec<f64> = w_2.into_iter().flatten().collect();
 
     let w_3: Vec<Vec<f64>> = vec![
-        vec![0.05, 0.2]
+        vec![0.05, 0.2],
+        vec![0.03, 0.1]
     ];
 
     let w_3_flat: Vec<f64> = w_3.into_iter().flatten().collect();
@@ -87,11 +87,11 @@ fn main() {
     println!("W Flat Len: {}", w_1_flat.len());
     println!("B Flat Len: {}", b_1.len());
     layer_1.set_all_weights(w_1_flat, b_1);
-    let mut layer_2: Layer = Layer::new(6, w_2_flat.len());
+    let mut layer_2: Layer = Layer::new(4, w_2_flat.len());
     println!("W 2 Flat Len: {}", w_2_flat.len());
     println!("B 2 Flat Len: {}", b_2.len());
     layer_2.set_all_weights(w_2_flat, b_2);
-    let mut layer_3: Layer = Layer::new(2, w_3_flat.len());
+    let mut layer_3: Layer = Layer::new(4, w_3_flat.len());
     println!("W 3 Flat Len: {}", w_3_flat.len());
     println!("B 3 Flat Len: {}", b_3.len());
     layer_3.set_all_weights(w_3_flat, b_3);
@@ -105,7 +105,7 @@ fn main() {
     }
 
     let nn: NeuralNetwork = NeuralNetwork::new(layers);
-    let input_layer: Vec<f64> = vec![0.0, 0.0];
+    let input_layer: Vec<f64> = vec![0.0, 0.0, 0.0, 0.0];
     let prediction: f64 = nn.predict(input_layer);
     println!("\n");
     println!("PREDICTION: {}", prediction);
