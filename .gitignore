@@ -1,4 +1,4 @@
-*.txt
-__pycache__/
-data/
-r_nn/target/
+*/r_nn/target/
+.vscode
+/data
+brainstorm.txt

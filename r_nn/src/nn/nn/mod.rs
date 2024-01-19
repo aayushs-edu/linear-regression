@@ -1,6 +1,8 @@
 pub mod nn {
+    //use core::num;
     use crate::nn::layer::layer::Layer;
 
+    #[derive(Clone)]
     pub struct NeuralNetwork {
         pub layers: Vec<Layer>,
         pub num_layers: usize
@@ -11,6 +13,7 @@ pub mod nn {
         /// Creates a new Neural Network object with an input Vec<Layer>
         pub fn new(layers: Vec<Layer>) -> NeuralNetwork {
             let num_layers: usize = layers.len();
+            println!("CREATED NEURAL NETWORK OBJECT WITH NUM_LAYERS: {}", num_layers);
             NeuralNetwork {
                 layers,
                 num_layers
@@ -20,11 +23,14 @@ pub mod nn {
             self.layers.insert(location, layer);
             self.num_layers += 1;
         }
-        pub fn predict(&self, input_layer: Vec<f32>) -> f32 {
-            let mut outputs: Vec<f32> = Vec::new();
-            let input: Vec<f32> = input_layer;
+        pub fn predict(&self, input_layer: Vec<f64>) -> f64 {
+            let mut outputs: Vec<f64> = Vec::new();
+            let input: Vec<f64> = input_layer;
+            let mut index: i64 = 1;
             for layer in &self.layers {
-                let output: Vec<f32> = layer.get_nodes().iter().map(|node| node.sigmoid_actualize(input.clone())).collect();
+                println!("activating nodes in hidden layer {}", index);
+                index += 1;
+                let output: Vec<f64> = layer.get_nodes().iter().map(|node| node.sigmoid_actualize(input.clone())).collect();
                 outputs.extend(output.clone())
             }
             println!("{:?}", outputs);
@@ -35,6 +41,12 @@ pub mod nn {
                 println!("Layer {}", i + 1);
                 self.layers[i].print_layer();
 
+            }
+        }
+        pub fn mut_clone(&mut self) -> NeuralNetwork {
+            NeuralNetwork {
+                layers: self.layers.iter().map(|layer| layer.clone()).collect(),
+                num_layers: self.num_layers
             }
         }
     }
