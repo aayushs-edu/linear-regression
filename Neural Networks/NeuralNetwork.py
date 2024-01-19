@@ -119,9 +119,15 @@ class Layer:
         return aVector
     
     def denseNumpy(self, inputLayer : np.ndarray | list[list[float]]) -> np.ndarray:
-        z = np.matmul(inputLayer, self.getWeights().T) + self.getBiases()
-        out = self.sigmoid(z)
+        Z = np.matmul(inputLayer, self.getWeights().T) + self.getBiases()
+        out = self.sigmoid(Z)
         return out
+    
+    def sigmoidZ(self, inputLayer : np.ndarray) -> np.ndarray:
+        return np.matmul(inputLayer, self.getWeights().T) + self.getBiases()
+    
+    def sigmoidActivate(self, Z : np.ndarray) -> np.ndarray:
+        return self.sigmoid(Z)
 
     def sigmoid(self, input):
         return 1/(1 + np.exp(-input))
@@ -163,7 +169,69 @@ class NeuralNetwork:
         print(outputs)
         return output[-1]
     
+    def MSE(self, yHats : np.ndarray, yActuals : np.ndarray):
+        _sum = np.square(yHats - yActuals)
+        return _sum * 1/(len(yActuals) * 2)
+    
+    def sigmoidCost(self, yHats : np.ndarray, yActuals : np.ndarray):
+        _sum = yActuals * np.log2(yHats) + (1 - yActuals) * np.log2(1 - yHats)
+        return -1/len(yActuals) * _sum.sum()
+        
+    def multiclassCost(self, yHats: np.ndarray, yActuals : np.ndarray):
+        _sum = np.matmul(yActuals, yHats.T).sum()
+        return -1/len(yActuals) * _sum
+    
+    def backProp(self, costFun : str, cost : float, X : np.ndarray, Y : np.ndarray):
+
+        m = len(X)
+        activations = [X]
+
+
+        match costFun:
+            case 'MSE':
+                pass
+
+            case 'sigmoid':
+                
+                # Forward Prop
+                for i, layer in self.layers:
+                    output = layer.sigmoidZ(activations[i])
+                    act = layer.sigmoidActivate(output)
+                    activations.append(output)
+
+                # Z = []
+                # A = []
+                # dW = []
+                # db = []
+                # # Forward Pass
+                # for l, layer in enumerate(self.layers):
+                #     if l == 0:
+                #         # First Layer
+                #         Z[0] = layer.sigmoidZ(X)
+                #         A[0] = layer.sigmoidActivate(Z[0])
+                #     else:
+                #         # Hidden Layers
+                #         Z[l] = layer.sigmoidZ(A[l-1])
+                #         A[l] = layer.sigmoidActivate(Z[l])
+                # # Calculate Cost
+                # cost = self.sigmoidCost(A[-1], Y)
+
+                # # Backward Propagation
+                # for i in range(self.numLayers):
+                #     Z = Z[::-1]
+                #     A = A[::-1]
+                #     if i == 0:
+                #         dz = A[0] - Y
+                #         dW[0] = 1/m * np.matmul(dz, A[1].T)
+                #         db[0] = 1/m * np.sum(dz, axis=1, keepdims=True)
+                
+
+
+            case 'multiclass':
+                pass
+    
     def printLayers(self):
         for i in range(self.numLayers):
             print(f"Layer {i+1}: ") 
             self.layers[i].printLayer()
+
