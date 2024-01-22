@@ -199,31 +199,7 @@ class NeuralNetwork:
                     act = layer.sigmoidActivate(output)
                     activations.append(output)
 
-                # Z = []
-                # A = []
-                # dW = []
-                # db = []
-                # # Forward Pass
-                # for l, layer in enumerate(self.layers):
-                #     if l == 0:
-                #         # First Layer
-                #         Z[0] = layer.sigmoidZ(X)
-                #         A[0] = layer.sigmoidActivate(Z[0])
-                #     else:
-                #         # Hidden Layers
-                #         Z[l] = layer.sigmoidZ(A[l-1])
-                #         A[l] = layer.sigmoidActivate(Z[l])
-                # # Calculate Cost
-                # cost = self.sigmoidCost(A[-1], Y)
-
-                # # Backward Propagation
-                # for i in range(self.numLayers):
-                #     Z = Z[::-1]
-                #     A = A[::-1]
-                #     if i == 0:
-                #         dz = A[0] - Y
-                #         dW[0] = 1/m * np.matmul(dz, A[1].T)
-                #         db[0] = 1/m * np.sum(dz, axis=1, keepdims=True)
+                
                 
 
 
