@@ -74,7 +74,7 @@ class Node:
         coefficient = math.sqrt(2 / math.pi)
         return 0.5 * z * (1 + np.tanh(coefficient * (z + 0.044715 * z**3)))
 
-    def setWeights(self, weights : list[float], b):
+    def setWeights(self, weights : list[float], b : list[float]):
         self.weights = weights
         self.b = b
         self.numWeights = len(weights)
@@ -98,7 +98,7 @@ class Layer:
     def setWeights(self, index : int, weights : list[float], bias : float):
         self.nodes[index].setWeights(weights, bias)
 
-    def setAllWeights(self, weights : list[list[float]], biases : list[float]):
+    def setAllWeights(self, weights : list[list[float]], biases : list[list[float]]):
         if len(weights) != len(biases): raise Exception('Weights and biases lists must be same length array')
         self.numWeights = len(weights[0])
         for i in range(self.numNodes):
@@ -123,8 +123,8 @@ class Layer:
         return out
     
     def sigmoidZ(self, inputLayer : np.ndarray) -> np.ndarray:
-        print(self.getWeights().shape)
-        print(inputLayer.shape)
+        print(np.array(self.getWeights()).shape)
+        print(np.array(inputLayer.shape))
         return np.matmul(self.getWeights(), inputLayer) + self.getBiases()
     
     def sigmoidA(self, Z : np.ndarray) -> np.ndarray:
@@ -137,20 +137,23 @@ class Layer:
         for i in range(self.numNodes):
             print(f"Node {i+1}:", self.nodes[i])
 
-    def getWeights(self) -> np.ndarray:
-        return np.array([node.getWeights() for node in self.nodes])
+    def getWeights(self) -> list[np.ndarray]:
+        return [node.getWeights() for node in self.nodes]
     
-    def getBiases(self):
-        return np.array([[node.getBias()] for node in self.nodes])
+    def getBiases(self) -> list[np.ndarray]:
+        return [node.getBias() for node in self.nodes]
 
     def getNodes(self):
         return self.nodes
     
 class NeuralNetwork:
 
-    def __init__(self, layers : list[Layer]) -> None:
+    def __init__(self, layers : list[Layer], alpha : float) -> None:
         self.layers = layers
         self.numLayers = len(layers)
+        self.alpha = alpha
+        self.weights = [layer.getWeights() for layer in self.layers]
+        self.biases = [layer.getBiases() for layer in self.layers]
 
     def addLayer(self, layer : Layer, location=0):
         self.layers.insert(location, layer)
@@ -176,19 +179,54 @@ class NeuralNetwork:
     
     def sigmoidCost(self, yHats : np.ndarray, yActuals : np.ndarray):
         _sum = yActuals * np.log2(yHats) + (1 - yActuals) * np.log2(1 - yHats)
+        print(_sum.shape)
         return -1/len(yActuals) * _sum.sum()
         
     def multiclassCost(self, yHats: np.ndarray, yActuals : np.ndarray):
         _sum = np.matmul(yActuals, yHats.T).sum()
         return -1/len(yActuals) * _sum
     
-    def backProp(self, costFun : str, X : np.ndarray, Y : np.ndarray):
-
-        L = self.numLayers
+    def forwardProp(self, X : np.ndarray):
         m = X.shape[1]
         A : list[np.ndarray] = [X]
         Z : list[np.ndarray] = [0]
+        # Forward Prop
+        for i, layer in enumerate(self.layers):
+            if i == 0:
+                assert A[i].shape == (self.layers[i].numWeights, m)
+            else:
+                print('Inputs shape: ', A[i].shape)
+                print('should be: ', self.layers[i-1].numNodes, m)
+                assert A[i].shape == (self.layers[i-1].numNodes, m)
+            Z.append(layer.sigmoidZ(A[i]))
+            A.append(layer.sigmoidA(Z[i+1]))
+            print(f"Forward Pass layer {i+1}")
+        return Z, A
+    
+    def backProp(self, activations, Y):
+        m = len(Y)
+        dZ = []
+        dW = []
+        db = []
+        for l in list(reversed(range(1, self.numLayers+1))):
+            dZcurr = None
+            if l == self.numLayers:
+                dZcurr = np.array(activations[l] - Y)
+                dZ.append(dZcurr)
+            else:
+                dA = np.matmul(np.array(self.layers[l].getWeights()).T, dZ[l-1])
+                gPrime = np.multiply(activations[l], 1 - activations[l])
+                dZcurr = np.multiply(dA, gPrime)
+                dZ.append(dZcurr)
+            dW.append((1/m) * np.matmul(dZcurr, activations[l-1].T))
+            db.append((1/m) * np.sum(dZcurr, axis=1, keepdims=True))
+            print(f"Backward Pass layer {l}")
+        
+        return dW[::-1], db[::-1]
 
+    def gradientDescent(self, costFun : str, X : np.ndarray, Y : np.ndarray, epochs):
+        m = X.shape[1]
+        costs = []
 
         match costFun:
             case 'MSE':
@@ -196,35 +234,23 @@ class NeuralNetwork:
 
             case 'sigmoid':
                 
-                # Forward Prop
-                for i, layer in enumerate(self.layers):
-                    if i == 0:
-                        assert A[i].shape == (self.layers[i].numWeights, m)
-                    else:
-                        assert A[i].shape == (self.layers[i-1].numNodes, m)
-                    Z.append(layer.sigmoidZ(A[i]))
-                    A.append(layer.sigmoidA(Z[i+1]))
-                    print(f"Forward Pass layer {i}")
-                # Backward Prop
-                dZ = []
-                dW = []
-                db = []
-                for l in list(reversed(range(L+1))):
-                    dZcurr = None
-                    if l == L:
-                        dZcurr = np.array(A[l] - Y)
-                        dZ.append(dZcurr)
-                    else:
-                        dA = np.matmul(self.layers[l+1].getWeights().T, dZ[l-1])
-                        gPrime = np.multiply(A[l], 1 - A[l])
-                        dZcurr = np.multiply(dA, gPrime)
-                        dZ.append(dZcurr)
-                    dW.append((1/m) * np.matmul(dZcurr, A[l-1].T))
-                    db.append((1/m) * np.sum(dZcurr, axis=1, keepdims=True))
-                    print(f"Backward Pass layer {l}")
-                
-                return dW, db
-
+                for e in range(epochs):
+                    # Forward Prop
+                    A = self.forwardProp(X)[1]
+                    # Calculate cost
+                    cost = self.sigmoidCost(A[-1], Y)
+                    print(f'Cost: on epoch {e}: ', cost)
+                    costs.append(cost)
+                    # Backward Prop
+                    dW, db = self.backProp(A, Y)
+                    # Update weights and biases
+                    for i, layer in enumerate(self.layers):
+                        Wnew = layer.getWeights() - self.alpha * dW[i]
+                        print(f'New Weights on epoch {e} in layer {i+1}: ', Wnew)
+                        bNew = layer.getBiases() - self.alpha * db[i]
+                        print(f'New Biases on epoch {e} in layer {i+1}: ', bNew)
+                        layer.setAllWeights(Wnew, bNew)
+                    print('Costs: ', costs)
             case 'multiclass':
                 pass
     
