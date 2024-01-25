@@ -225,7 +225,7 @@ class NeuralNetwork:
         return dW[::-1], db[::-1]
 
     def gradientDescent(self, costFun : str, X : np.ndarray, Y : np.ndarray, epochs):
-        m = X.shape[1]
+        #m = X.shape[1]
         costs = []
 
         match costFun:
